@@ -1,0 +1,36 @@
+version: "3.9"
+
+services:
+
+  app:
+    build:
+      context: ./app
+    env_file:
+      - .env
+    ports:
+      - "5000:5000"
+    restart: always
+    volumes:
+      - ./app:/app
+      - dev-static-data:/vol/
+    container_name: app_genkey
+    depends_on:
+      - db
+    command: >
+      sh -c "python app.py"
+
+  db:
+    image: postgres:13-alpine
+    env_file:
+      - .env
+    volumes:
+      - dev-db-data:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_DB=${PG_DB}
+      - POSTGRES_USER=${PG_USER}
+      - POSTGRES_PASSWORD=${PG_PASSWORD}
+    container_name: db_genkey
+
+volumes:
+  dev-static-data:
+  dev-db-data:
