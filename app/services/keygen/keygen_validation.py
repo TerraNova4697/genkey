@@ -49,7 +49,11 @@ class KeygenValidation:
             "services": {
                 "type": "array",
                 "minItems": 1,
-                "items": {"type": "integer"}
+                "items": {
+                    "type": "array",
+                    "minItems": 2,
+                    "maxItems": 2
+                }
             },
             "issued_for": {"type": "string"},
             "device_id": {"type": "string"}
