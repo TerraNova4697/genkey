@@ -1,8 +1,8 @@
-from flask import Blueprint, request
+from flask import Blueprint, jsonify, request
 
 from services.keygen import KeyGenerator
-# from app.app import db
-# from models import Company
+# from database import db
+from models import Company, Payment, Key, PaymentSchema, KeySchema, CompanySchema
 
 
 api_bp = Blueprint(
@@ -14,32 +14,26 @@ api_bp = Blueprint(
 )
 
 
-
-
 @api_bp.route('/', methods=['GET', 'POST'])
 def index():
-    from app.app import db
-    # if request.method == 'GET':
-    #     data = request.get_json()
-    #     key = jwt.decode(data.key, 'sectet', algorithms='HS256')
-    #     return json.dumps({
-    #         "decoded": key
-    #     })
     if request.method == 'POST':
-        keygen = KeyGenerator(request.get_json())
+        req_data = request.get_json()
+        keygen = KeyGenerator(req_data)
         if keygen.is_valid():
-            key = keygen.generate_key()
+            # key = keygen.generate_key()
+            # companies = Company.query.where(Company.fullname==req_data['company']).all()
             return {
                 'status': 200,
-                'key': key
+                'key': req_data,
             }
-
-
-# @api_bp.route('/key', methods=['POST'])
-# def key():
-#     data = request.get_json()
-#     print(data)
-#     key = jwt.decode(data['key'], 'jkOA2ZgSNGig8nbYia1KUw', algorithms='HS256')
-#     return json.dumps({
-#         "decoded": key
-#     })
+    # if request.method == 'GET':
+    #     payment = Payment(payment_amount=100.0, status='Completed')
+    #     db.session.add(payment)
+    #     db.session.commit()
+    #     payment_schema = PaymentSchema()
+    #     payment_json = payment_schema.dump(payment)
+    #     print(payment_json)
+    #     payments = Payment.query.all()
+    #     return {
+    #         'payments': payment_schema.dump(payments)
+    #     }
