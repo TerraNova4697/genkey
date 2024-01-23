@@ -3,7 +3,7 @@ from flask_migrate import Migrate
 from flask_sqlalchemy import SQLAlchemy
 from flask import Flask
 
-from database import db
+from database import db, ma
 from api.api import api_bp
 from general.general import general_bp
 
@@ -13,6 +13,7 @@ def create_app():
     app.config.from_object(os.environ['APP_SETTINGS'])
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
     db.init_app(app)
+    ma.init_app(app)
     app.register_blueprint(general_bp)
     app.register_blueprint(api_bp, url_prefix='/api/v1')
     return app

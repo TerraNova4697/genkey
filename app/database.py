@@ -1,4 +1,5 @@
+from flask_marshmallow import Marshmallow
 from flask_sqlalchemy import SQLAlchemy
-from models import Base
 
-db = SQLAlchemy(model_class=Base)
+db = SQLAlchemy()
+ma = Marshmallow()

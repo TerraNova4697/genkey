@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 from datetime import date
 
-from database import db
+from database import db, ma
 from sqlalchemy.dialects.postgresql import JSON
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.sql import func
@@ -10,8 +10,8 @@ from sqlalchemy.orm import relationship, Mapped, mapped_column
 from sqlalchemy.orm import DeclarativeBase, MappedAsDataclass
 
 
-class Base(DeclarativeBase, MappedAsDataclass):
-    pass
+# class Base(DeclarativeBase, MappedAsDataclass):
+#     pass
 
 
 # class Base(DeclarativeBase):
@@ -27,30 +27,13 @@ class Base(DeclarativeBase, MappedAsDataclass):
 class Company(db.Model):
     __tablename__ = 'companies'
 
-    id: Mapped[int] = mapped_column(primary_key=True)
-    fullname: Mapped[str] = mapped_column(db.String(128))
+    id = db.Column(db.Integer, primary_key=True)
+    fullname = db.Column(db.String(128))
+    persons = relationship('Person', back_populates='company')
+    keys = relationship('Key', back_populates='company')
 
     def __repr__(self):
         return 'id: {}, fullname: {}'.format(self.id, self.fullname)
-
-
-# class CompanySchema(Schema):
-#     id = fields.Int()
-#     fullname = fields.Str()
-
-
-class Payment(db.Model):
-    __tablename__ = 'payments'
-
-    id: Mapped[int] = db.Column(db.Integer, primary_key=True)
-    created_at: Mapped[str] = db.Column(db.Date, server_default=func.now())
-    updated_at: Mapped[str] = db.Column(db.Date, onupdate=func.now())
-    payment_amount: Mapped[int] = db.Column(db.Float, nullable=False)
-    status: Mapped[str] = db.Column(db.Enum('Pending', 'Completed', 'Failed', name='payment_status'), nullable=False)
-    keys: Mapped[int] = relationship('Key', backref='payment', lazy=True)
-
-    def __repr__(self):
-        return 'id: {}, status: {}'.format(self.id, self.status)
 
 
 class Person(db.Model):
@@ -62,7 +45,40 @@ class Person(db.Model):
     fname = db.Column(db.String(64))
     lname = db.Column(db.String(64))
     patronym = db.Column(db.String(64), nullable=True)
-    company = relationship('Company')
+    company_id = mapped_column(db.ForeignKey('companies.id'))
+    company = relationship('Company', back_populates='persons')
+
+
+class Key(db.Model):
+    __tablename__ = 'keys'
+
+    id = db.Column(db.Integer, primary_key=True)
+    key = db.Column(db.String(1024))
+    created_at = db.Column(db.Date, server_default=func.now())
+    updated_at = db.Column(db.Date, onupdate=func.now())
+    issuer = db.Column(db.String(128))
+    payments = relationship('Payment', back_populates='key')
+    company_id = db.Column(db.Integer, db.ForeignKey('companies.id'))
+    company = relationship('Company', back_populates='keys')
+
+    def __repr__(self):
+        return f'Key. Issuer: {self.issuer}'
+
+
+class Payment(db.Model):
+    __tablename__ = 'payments'
+
+    id = db.Column(db.Integer, primary_key=True)
+    created_at = db.Column(db.Date)
+    updated_at = db.Column(db.Date, onupdate=func.now())
+    payment_amount = db.Column(db.Integer, nullable=False)
+    status = db.Column(db.Enum('Pending', 'Completed', 'Failed', name='payment_status'), nullable=False)
+    key_id = db.Column(db.Integer, db.ForeignKey('keys.id'))
+    key = relationship('Key', back_populates='payments')
+
+    def __repr__(self):
+        return 'id: {}, status: {}'.format(self.id, self.status)
+
 
 
 # class PaymentSchema(Schema):
@@ -73,48 +89,87 @@ class Person(db.Model):
 #     status = fields.Str()
 
 
-class Key(db.Model):
-    __tablename__ = 'keys'
-
-    key = db.Column(db.String, primary_key=True)
-    created_at = db.Column(db.Date, server_default=func.now())
-    updated_at = db.Column(db.Date, onupdate=func.now())
-    issuer = db.Column(db.String(128))
-    payment_id = db.Column(db.Integer, db.ForeignKey('payments.id'), nullable=False)
-    company_id = db.Column(db.Integer, db.ForeignKey('companies.id'), nullable=False)
-
-    def __repr__(self):
-        return f'Key. Issuer: {self.issuer}'
 
 
-class Service(db.Model):
-    __tablename__ = 'services'
 
-    id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(256))
+# class Service(db.Model):
+#     __tablename__ = 'services'
 
-    def __repr__(self):
-        return f'{self.name}'
+#     id = db.Column(db.Integer, primary_key=True)
+#     name = db.Column(db.String(256))
 
-
-class PaymentSchema(Schema):
-    class Meta:
-        model = Payment
-        include_fk = True
-        unknown = EXCLUDE
+#     def __repr__(self):
+#         return f'{self.name}'
 
 
-class CompanySchema(Schema):
+# class PaymentSchema(Schema):
+#     class Meta:
+#         model = Payment
+#         include_fk = True
+#         unknown = EXCLUDE
+
+
+class CompanySchema(ma.SQLAlchemyAutoSchema):
     class Meta:
         model = Company
-        unknown = EXCLUDE
+        include_fk = True
+        # unknown = EXCLUDE
+        # fields = ('id', 'fullname')
 
 
-class KeySchema(Schema):
+class PersonSchema(ma.SQLAlchemyAutoSchema):
+    class Meta:
+        model = Person
+        # include_fk = True
+        # unknown = EXCLUDE
+        # fields = ('id', 'created_at', 'updated_at', 'fname', 'lname', 'patronym', 'company')
+    id = ma.auto_field()
+    fname = ma.auto_field()
+    lname = ma.auto_field()
+    patronym = ma.auto_field()
+    company = ma.auto_field()
+
+
+class KeySchema(ma.SQLAlchemyAutoSchema):
     class Meta:
         model = Key
-        include_fk = True
-        unknown = EXCLUDE
+
+    id = ma.auto_field()
+    key = ma.auto_field()
+    created_at = ma.auto_field()
+    updated_at = ma.auto_field()
+    issuer = ma.auto_field()
+    payments = ma.auto_field()
+    company = ma.auto_field()
+
+
+class PaymentSchema(ma.SQLAlchemyAutoSchema):
+    class Meta:
+        model = Payment
+
+    id = ma.auto_field()
+    created_at = ma.auto_field()
+    updated_at = ma.auto_field()
+    payment_amount = ma.auto_field()
+    status = ma.auto_field()
+    key = ma.auto_field()
+
+
+company_schema = CompanySchema()
+companies_schema = CompanySchema(many=True)
+person_schema = PersonSchema()
+persons_schema = PersonSchema(many=True)
+key_schema = KeySchema()
+keys_schema = KeySchema(many=True)
+payment_schema = PaymentSchema()
+payments_schema = PaymentSchema(many=True)
+
+
+# class KeySchema(Schema):
+#     class Meta:
+#         model = Key
+#         include_fk = True
+#         unknown = EXCLUDE
 
 
 # @dataclass
