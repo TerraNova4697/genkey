@@ -122,25 +122,26 @@ class PersonSchema(ma.SQLAlchemyAutoSchema):
         model = Person
         # include_fk = True
         # unknown = EXCLUDE
-        # fields = ('id', 'created_at', 'updated_at', 'fname', 'lname', 'patronym', 'company')
-    id = ma.auto_field()
+        fields = ('fname', 'lname', 'patronym')
+    # id = ma.auto_field()
     fname = ma.auto_field()
     lname = ma.auto_field()
     patronym = ma.auto_field()
-    company = ma.auto_field()
+    # company = ma.auto_field()
 
 
 class KeySchema(ma.SQLAlchemyAutoSchema):
     class Meta:
         model = Key
+        fields = ('key', )
 
-    id = ma.auto_field()
+    # id = ma.auto_field()
     key = ma.auto_field()
-    created_at = ma.auto_field()
-    updated_at = ma.auto_field()
-    issuer = ma.auto_field()
-    payments = ma.auto_field()
-    company = ma.auto_field()
+    # created_at = ma.auto_field()
+    # updated_at = ma.auto_field()
+    # issuer = ma.auto_field()
+    # payments = ma.auto_field()
+    # company = ma.auto_field()
 
 
 class PaymentSchema(ma.SQLAlchemyAutoSchema):

@@ -1,9 +1,16 @@
 from datetime import date
 
 from models import (
-    Company, Person, Key, Payment, companies_schema, company_schema, person_schema, persons_schema
+    Company, Person, Key, Payment, companies_schema, company_schema, person_schema, persons_schema, key_schema
 )
 from database import db
+
+
+payment_statuses = {
+    1: 'Pending',
+    2: 'Completed',
+    3: 'Failed'
+}
 
 
 def handle_keygen_data(data, key):
@@ -31,9 +38,17 @@ def handle_keygen_data(data, key):
     dt = date.fromtimestamp(data['payment']['created_at'])
     payment = Payment(
         payment_amount=data['payment']['amount'],
-        status=data['payment']['status'],
+        status=payment_statuses[data['payment']['status']],
         created_at=dt,
         key=key
     )
     db.session.add(payment)
     db.session.commit()
+
+    return {
+        'key': key.key,
+        'issued_for': person_schema.dump(person),
+        'created_at': key.created_at,
+        'company': company.fullname,
+        'payment_status': payment.status
+    }

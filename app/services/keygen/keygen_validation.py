@@ -39,7 +39,7 @@ class KeygenValidation:
             "payment": {
                 "type": "object",
                 "properties": {
-                    "status": {"type": "string"},
+                    "status": {"type": "integer"},
                     "amount": {"type": "integer"},
                     "created_at": {"type": "integer"}
                 },
@@ -50,15 +50,14 @@ class KeygenValidation:
                 "type": "array",
                 "minItems": 1,
                 "items": {
-                    "type": "array",
-                    "minItems": 2,
-                    "maxItems": 2
+                    "type": "integer",
                 }
             },
+            "devices": {"type": "integer"},
             "issued_for": {"type": "string"},
             "device_id": {"type": "string"}
         },
-        "required": ["company", "person", "payment", "expires_at", "services", "issued_for", "device_id"]
+        "required": ["company", "person", "payment", "expires_at", "services", "issued_for", "device_id", "devices"]
     }
 
     def __init__(self):
