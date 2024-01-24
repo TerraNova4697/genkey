@@ -1,6 +1,5 @@
 import os
 from flask_migrate import Migrate
-from flask_sqlalchemy import SQLAlchemy
 from flask import Flask
 
 from database import db, ma
@@ -17,26 +16,6 @@ def create_app():
     app.register_blueprint(general_bp)
     app.register_blueprint(api_bp, url_prefix='/api/v1')
     return app
-
-
-# def setup_database(app):
-#     with app.app_context():
-#         db.create_all()
-#     user = User()
-#     user.username = "Tom"
-#     db.session.add(user)
-#     db.session.commit()
-
-
-# app = Flask(__name__)
-
-# from api.api import api_bp
-# from general.general import general_bp
-# from models import *
-
-# db = SQLAlchemy(app)
-# migrate = Migrate(app, db)
-
 
 
 if __name__ == '__main__':

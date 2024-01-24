@@ -1,7 +1,7 @@
 from datetime import date
 
 from models import (
-    Company, Person, Key, Payment, companies_schema, company_schema, person_schema, persons_schema, key_schema
+    Company, Person, Key, Payment, person_schema
 )
 from database import db
 

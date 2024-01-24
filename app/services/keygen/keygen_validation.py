@@ -1,27 +1,8 @@
-from werkzeug.exceptions import BadRequest
-from services.validation.fullname_validation import FullNameValidation
-
 from services.validation.exceptions import ValidationException
-# from services.validation import (
-#     IntegerValidation, DateValidation, ListValidation
-# )
 from jsonschema import validate
 
 
 class KeygenValidation:
-    # MANDATORY_KEYS = {
-        # 'company': StringValidation(),
-        # 'person': DictValidation(),
-        # 'payment': DictValidation(),
-        # 'expires_at': DateValidation(),
-        # 'services': ListValidation(),
-        # 'issued_at': StringValidation(),
-        # 'device_id': StringValidation()
-        # 'devices_amount': IntegerValidation(min=10, max=50000),
-        # 'expiration_date': DateValidation(),
-        # 'services': ListValidation(),
-        # 'fullname': FullNameValidation()
-    # }
 
     keygen_request_schema = {
         "type": "object",

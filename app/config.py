@@ -3,7 +3,6 @@ basedir = os.path.abspath(os.path.dirname(__file__))
 # postgresql://[user[:password]@][netloc][:port][/dbname][?param1=value1&...]
 
 
-
 class Config(object):
     DEBUG = False
     TESTING = False
