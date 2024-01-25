@@ -36,6 +36,7 @@ class Key(db.Model):
     created_at = db.Column(db.Date, server_default=func.now())
     updated_at = db.Column(db.Date, onupdate=func.now())
     issuer = db.Column(db.String(128))
+    device_id = db.Column(db.String(256))
     payments = relationship('Payment', back_populates='key')
     company_id = db.Column(db.Integer, db.ForeignKey('companies.id'))
     company = relationship('Company', back_populates='keys')

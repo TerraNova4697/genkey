@@ -1,4 +1,4 @@
-from datetime import date
+from datetime import date, datetime
 
 from models import (
     Company, Person, Key, Payment, person_schema
@@ -48,7 +48,7 @@ def handle_keygen_data(data, key):
     return {
         'key': key.key,
         'issued_for': person_schema.dump(person),
-        'created_at': key.created_at,
+        'created_at': int(datetime.strptime(key.created_at.strftime("%a, %d %b %Y %H:%M:%S GMT"), "%a, %d %b %Y %H:%M:%S GMT").timestamp()),
         'company': company.fullname,
         'payment_status': payment.status
     }

@@ -22,7 +22,7 @@ class KeyGenerator:
 
     def generate_key(self):
         payload = {
-            'created_at': date.today().strftime('%s'),
+            'created_at': int(date.today().strftime('%s')),
             'devices': self.data['devices'],
             'services': self.data['services'],
             'expires_at': self.data['expires_at'],
