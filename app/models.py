@@ -28,6 +28,16 @@ class Person(db.Model):
     company = relationship('Company', back_populates='persons')
 
 
+class Device(db.Model):
+    __tablename__ = 'devices'
+
+    device_id = db.Column(db.String(256), primary_key=True)
+    secret_key = db.Column(db.String(128))
+
+    def __repr__(self):
+        return f'{self.device_id}'
+
+
 class Key(db.Model):
     __tablename__ = 'keys'
 

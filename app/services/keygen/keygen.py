@@ -1,8 +1,13 @@
 import os
 from datetime import date
+from services.validation.exceptions import ItemNotFound
+from models import Device
 
 from services.keygen.keygen_validation import KeygenValidation
 import jwt
+from sqlalchemy.exc import NoResultFound
+
+from database import db
 
 
 class KeyGenerator:
@@ -21,6 +26,11 @@ class KeyGenerator:
         return total
 
     def generate_key(self):
+        try:
+            device =  db.session.execute(db.select(Device).filter_by(device_id=self.data['device_id'])).scalar_one()
+        except NoResultFound:
+            raise ItemNotFound('Устройство с таким ID в системе не найдено')
+
         payload = {
             'created_at': int(date.today().strftime('%s')),
             'devices': self.data['devices'],
@@ -29,4 +39,4 @@ class KeyGenerator:
             'issued_for': self.data['issued_for'],
             'device_id': self.data['device_id']
         }
-        return jwt.encode(payload, os.environ.get('SECRET'), algorithm='HS256')
+        return jwt.encode(payload, device.secret_key, algorithm='HS256')
