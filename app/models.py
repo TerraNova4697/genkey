@@ -8,6 +8,8 @@ class Company(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     fullname = db.Column(db.String(128))
+    email = db.Column(db.String(128))
+    phone = db.Column(db.String(128))
     persons = relationship('Person', back_populates='company')
     keys = relationship('Key', back_populates='company')
 
@@ -23,7 +25,8 @@ class Person(db.Model):
     updated_at = db.Column(db.Date, onupdate=func.now())
     fname = db.Column(db.String(64))
     lname = db.Column(db.String(64))
-    patronym = db.Column(db.String(64), nullable=True)
+    email = db.Column(db.String(128))
+    phone = db.Column(db.String(128))
     company_id = mapped_column(db.ForeignKey('companies.id'))
     company = relationship('Company', back_populates='persons')
 
@@ -79,11 +82,12 @@ class CompanySchema(ma.SQLAlchemyAutoSchema):
 class PersonSchema(ma.SQLAlchemyAutoSchema):
     class Meta:
         model = Person
-        fields = ('fname', 'lname', 'patronym')
+        fields = ('fname', 'lname', 'phone', 'email')
 
     fname = ma.auto_field()
     lname = ma.auto_field()
-    patronym = ma.auto_field()
+    phone = ma.auto_field()
+    email = ma.auto_field()
 
 
 class KeySchema(ma.SQLAlchemyAutoSchema):

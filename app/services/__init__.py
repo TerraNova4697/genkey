@@ -14,14 +14,19 @@ payment_statuses = {
 
 
 def handle_keygen_data(data, key):
-    company = Company(fullname=data['company'])
+    company = Company(
+        fullname=data['company'],
+        email=data['email'],
+        phone=data['phone']
+    )
     db.session.add(company)
     db.session.commit()
 
     person = Person(
         fname=data['person']['fname'],
         lname=data['person']['lname'],
-        patronym=data['person'].get('patronym'),
+        email=data['person']['email'],
+        phone=data['person']['phone'],
         company=company
     )
     db.session.add(person)
@@ -50,5 +55,7 @@ def handle_keygen_data(data, key):
         'issued_for': person_schema.dump(person),
         'created_at': int(datetime.strptime(key.created_at.strftime("%a, %d %b %Y %H:%M:%S GMT"), "%a, %d %b %Y %H:%M:%S GMT").timestamp()),
         'company': company.fullname,
+        'phone': company.phone,
+        'email': company.email,
         'payment_status': payment.status
     }

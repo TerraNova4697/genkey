@@ -8,12 +8,15 @@ class KeygenValidation:
         "type": "object",
         "properties": {
             "company": {"type": "string"},
+            "phone": {"type": "string"},
+            "email": {"type": "string"},
             "person": {
                 "type": "object",
                 "properties": {
                     "fname": {"type": "string"},
                     "lname": {"type": "string"},
-                    "fname": {"type": "string"},
+                    "email": {"type": "string"},
+                    "phone": {"type": "string"},
                 },
                 "required": ["fname", "lname"]
             },
@@ -38,7 +41,7 @@ class KeygenValidation:
             "issued_for": {"type": "string"},
             "device_id": {"type": "string"}
         },
-        "required": ["company", "person", "payment", "expires_at", "services", "issued_for", "device_id", "devices"]
+        "required": ["company", "phone", "email", "person", "payment", "expires_at", "services", "issued_for", "device_id", "devices"]
     }
 
     def __init__(self):
