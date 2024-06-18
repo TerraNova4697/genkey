@@ -8,8 +8,8 @@ class KeygenValidation:
         "type": "object",
         "properties": {
             "company": {"type": "string"},
-            "phone": {"type": "string"},
-            "email": {"type": "string"},
+            "companyPhone": {"type": "string"},
+            "companyEmail": {"type": "string"},
             "person": {
                 "type": "object",
                 "properties": {
@@ -18,16 +18,16 @@ class KeygenValidation:
                     "email": {"type": "string"},
                     "phone": {"type": "string"},
                 },
-                "required": ["fname", "lname"]
+                "required": ["fname", "lname", "email"],
             },
             "payment": {
                 "type": "object",
                 "properties": {
                     "status": {"type": "integer"},
                     "amount": {"type": "integer"},
-                    "created_at": {"type": "integer"}
+                    "created_at": {"type": "integer"},
                 },
-                "required": ["status", "amount", "created_at"]
+                "required": ["status", "amount", "created_at"],
             },
             "expires_at": {"type": "integer"},
             "services": {
@@ -35,13 +35,23 @@ class KeygenValidation:
                 "minItems": 1,
                 "items": {
                     "type": "integer",
-                }
+                },
             },
             "devices": {"type": "integer"},
             "issued_for": {"type": "string"},
-            "device_id": {"type": "string"}
+            "device_id": {"type": "string"},
         },
-        "required": ["company", "phone", "email", "person", "payment", "expires_at", "services", "issued_for", "device_id", "devices"]
+        "required": [
+            "company",
+            "companyEmail",
+            "person",
+            "payment",
+            "expires_at",
+            "services",
+            "issued_for",
+            "device_id",
+            "devices",
+        ],
     }
 
     def __init__(self):

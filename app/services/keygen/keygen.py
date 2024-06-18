@@ -27,16 +27,18 @@ class KeyGenerator:
 
     def generate_key(self):
         try:
-            device =  db.session.execute(db.select(Device).filter_by(device_id=self.data['device_id'])).scalar_one()
+            device = db.session.execute(
+                db.select(Device).filter_by(device_id=self.data["device_id"])
+            ).scalar_one()
         except NoResultFound:
-            raise ItemNotFound('Устройство с таким ID в системе не найдено')
+            raise ItemNotFound("Устройство с таким ID в системе не найдено")
 
         payload = {
-            'created_at': int(date.today().strftime('%s')),
-            'devices': self.data['devices'],
-            'services': self.data['services'],
-            'expires_at': self.data['expires_at'],
-            'issued_for': self.data['issued_for'],
-            'device_id': self.data['device_id']
+            "created_at": int(date.today().strftime("%s")),
+            "devices": self.data["devices"],
+            "services": self.data["services"],
+            "expires_at": self.data["expires_at"],
+            "issued_for": self.data["issued_for"],
+            "device_id": self.data["device_id"],
         }
-        return jwt.encode(payload, device.secret_key, algorithm='HS256')
+        return jwt.encode(payload, device.secret_key, algorithm="HS256")

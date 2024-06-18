@@ -9,7 +9,7 @@ payment_statuses = {1: "Pending", 2: "Completed", 3: "Failed"}
 
 def handle_keygen_data(data, key):
     company = Company(
-        fullname=data["company"], email=data["email"], phone=data["phone"]
+        fullname=data["company"], email=data["companyEmail"], phone=data["companyPhone"]
     )
     db.session.add(company)
     db.session.commit()
@@ -18,7 +18,7 @@ def handle_keygen_data(data, key):
         fname=data["person"]["fname"],
         lname=data["person"]["lname"],
         email=data["person"]["email"],
-        phone=data["person"]["phone"],
+        phone=data["person"].get("phone"),
         company=company,
     )
     db.session.add(person)
